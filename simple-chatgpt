@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SHORTCUT_NAME="simple-chatgpt"
+
+usage() {
+  status="${1:-0}"
+  cat >&2 <<EOF
+Usage:
+  $(basename "$0") "your question"
+  $(basename "$0") -f INPUT_FILE
+  $(basename "$0") "your question" -o OUTPUT_FILE
+  $(basename "$0") -f INPUT_FILE -o OUTPUT_FILE
+
+Options:
+  -f FILE   Read prompt from FILE instead of command-line arguments
+  -o FILE   Write response to FILE instead of stdout
+  -h        Show this help
+EOF
+  exit "$status"
+}
+
+input_file=""
+output_file=""
+
+# Parse flags
+while getopts ":f:o:h" opt; do
+  case "$opt" in
+    f) input_file="$OPTARG" ;;
+    o) output_file="$OPTARG" ;;
+    h) usage 0 ;;
+    \?) echo "Unknown option: -$OPTARG" >&2; usage 1 ;;
+    :)  echo "Option -$OPTARG requires an argument." >&2; usage 1 ;;
+  esac
+done
+
+shift $((OPTIND - 1))
+
+# Determine prompt source: file or args
+if [ -n "$input_file" ]; then
+  if [ ! -f "$input_file" ]; then
+    echo "Input file not found: $input_file" >&2
+    exit 1
+  fi
+  prompt=$(cat "$input_file")
+else
+  if [ "$#" -eq 0 ]; then
+    echo "Error: no prompt provided." >&2
+    usage 1
+  fi
+  prompt="$*"
+fi
+
+# Call the Shortcut, feeding the prompt via stdin
+ANSWER=$(printf '%s' "$prompt" | shortcuts run "$SHORTCUT_NAME")
+
+# Output: stdout by default, or file if -o is provided
+if [ -n "$output_file" ]; then
+  printf '%s\n' "$ANSWER" > "$output_file"
+else
+  printf '%s\n' "$ANSWER"
+fi
