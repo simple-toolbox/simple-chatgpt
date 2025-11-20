@@ -8,8 +8,7 @@ Behind the scenes it forwards your input to a macOS Shortcut included with the i
 
 ```bash
 brew tap paolofulgoni/simple-chatgpt https://github.com/paolofulgoni/simple-chatgpt
-# Until a release is tagged, install from HEAD:
-brew install --HEAD paolofulgoni/simple-chatgpt/simple-chatgpt
+brew install paolofulgoni/simple-chatgpt/simple-chatgpt
 # Import the Shortcut into the Shortcuts app:
 open "$(brew --prefix)/share/simple-chatgpt/simple-chatgpt.shortcut"
 ```
