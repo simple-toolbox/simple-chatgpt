@@ -15,6 +15,3 @@ jobs:
 
       - name: Run Shellcheck
         run: shellcheck simple-chatgpt
-
-      - name: Check formula syntax
-        run: ruby -c Formula/simple-chatgpt.rb

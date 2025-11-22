@@ -12,8 +12,8 @@ Behind the scenes it forwards your input to a macOS Shortcut included with the i
 ## Install
 
 ```bash
-brew tap simple-toolbox/simple-chatgpt https://github.com/simple-toolbox/simple-chatgpt
-brew install simple-toolbox/simple-chatgpt/simple-chatgpt
+brew tap simple-toolbox/tools
+brew install simple-toolbox/tools/simple-chatgpt
 # Import the Shortcut into the Shortcuts app:
 open "$(brew --prefix)/share/simple-chatgpt/simple-chatgpt.shortcut"
 ```
