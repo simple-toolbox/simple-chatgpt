@@ -2,6 +2,7 @@
 set -euo pipefail
 
 SHORTCUT_NAME="simple-chatgpt"
+CHATGPT_APP_NAME="ChatGPT"
 
 usage() {
   status="${1:-0}"
@@ -18,6 +19,43 @@ Options:
   -h        Show this help
 EOF
   exit "$status"
+}
+
+is_chatgpt_running() {
+  osascript -e 'application "ChatGPT" is running' 2>/dev/null | grep -qi true
+}
+
+open_chatgpt() {
+  if ! open -a "$CHATGPT_APP_NAME" >/dev/null 2>&1; then
+    echo "Could not open $CHATGPT_APP_NAME. Is it installed?" >&2
+    return 1
+  fi
+
+  for _ in {1..20}; do
+    sleep 0.2
+    if is_chatgpt_running; then
+      return 0
+    fi
+  done
+
+  echo "Timed out waiting for $CHATGPT_APP_NAME to start." >&2
+  return 1
+}
+
+ensure_chatgpt_running() {
+  if is_chatgpt_running; then
+    return 0
+  fi
+
+  open_chatgpt
+}
+
+run_shortcut() {
+  set +e
+  ANSWER=$(printf '%s' "$prompt" | shortcuts run "$SHORTCUT_NAME" 2>&1)
+  local status=$?
+  set -e
+  return "$status"
 }
 
 input_file=""
@@ -51,8 +89,12 @@ else
   prompt="$*"
 fi
 
-# Call the Shortcut, feeding the prompt via stdin
-ANSWER=$(printf '%s' "$prompt" | shortcuts run "$SHORTCUT_NAME")
+ensure_chatgpt_running
+
+if ! run_shortcut; then
+  echo "$ANSWER" >&2
+  exit 1
+fi
 
 # Output: stdout by default, or file if -o is provided
 if [ -n "$output_file" ]; then

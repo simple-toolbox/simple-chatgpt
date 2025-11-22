@@ -2,6 +2,11 @@
 
 Simple command-line tool to use ChatGPT Desktop from your Mac terminal.
 
+```bash
+> simple-chatgpt "What is the capital of Italy?"
+The capital of Italy is Rome.
+```
+
 Behind the scenes it forwards your input to a macOS Shortcut included with the install. No OpenAI API key required.
 
 ## Install
@@ -21,29 +26,14 @@ The included Shortcut uses the standard “Run ChatGPT” action shipped with th
 
 ## Use
 
-Ask a question directly:
-
 ```bash
-simple-chatgpt "What is the capital of Italy?"
+simple-chatgpt "What's Italy's capital?"    # ask directly
+simple-chatgpt -f prompt.txt                # read prompt from a file
+simple-chatgpt -o answer.txt "Write a poem" # write the answer to a file
+simple-chatgpt -h                           # help
 ```
 
-Read a prompt from a file:
-
-```bash
-simple-chatgpt -f prompt.txt
-```
-
-Write the answer to a file:
-
-```bash
-simple-chatgpt -o answer.txt "What does 'anolini' mean?"
-```
-
-Get help:
-
-```bash
-simple-chatgpt -h
-```
+`simple-chatgpt` launches the ChatGPT app automatically if it is not running.
 
 ## Disclaimer
 
